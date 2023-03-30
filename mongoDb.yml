@@ -4,7 +4,7 @@ metadata:
   name: mongodb-configmap
 data:
   db_host: mongodb-service
- 
+
 ---
 apiVersion: v1
 kind: Secret
@@ -33,22 +33,22 @@ spec:
         app: mongodb
     spec:
       containers:
-      - name: mongodb
-        image: mongo
-        ports:
-        - containerPort: 27017
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongodb-secret
-              key: username
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongodb-secret
-              key: password
-              
+        - name: mongodb
+          image: mongo
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: password
+
 ---
 apiVersion: v1
 kind: Service
@@ -61,7 +61,7 @@ spec:
     - protocol: TCP
       port: 27017
       targetPort: 27017
-  
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -80,26 +80,26 @@ spec:
         app: mongo-express
     spec:
       containers:
-      - name: mongo-express
-        image: mongo-express
-        ports:
-        - containerPort: 8081
-        env:
-        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
-          valueFrom:
-            secretKeyRef:
-              name: mongodb-secret
-              key: username
-        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mongodb-secret
-              key: password
-        - name: ME_CONFIG_MONGODB_SERVER 
-          valueFrom: 
-            configMapKeyRef:
-              name: mongodb-configmap
-              key: db_host
+        - name: mongo-express
+          image: mongo-express
+          ports:
+            - containerPort: 8081
+          env:
+            - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: username
+            - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: password
+            - name: ME_CONFIG_MONGODB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-configmap
+                  key: db_host
 ---
 apiVersion: v1
 kind: Service
@@ -108,9 +108,7 @@ metadata:
 spec:
   selector:
     app: mongo-express
-  type: LoadBalancer  
+  type: NodePort
   ports:
-    - protocol: TCP
-      port: 8081
+    - port: 8081
       targetPort: 8081
-      nodePort: 30000

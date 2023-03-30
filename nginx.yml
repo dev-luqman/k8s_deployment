@@ -6,7 +6,7 @@ metadata:
     app: nginx-app
 
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: nginx-app
@@ -30,9 +30,7 @@ metadata:
 spec:
   selector:
     app: nginx-app
-  type: LoadBalancer
+  type: NodePort
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 80
       targetPort: 80
-      nodePort: 30000
